@@ -9,23 +9,6 @@
       "ios": "~8.7.0"
     }
   },
-  "scripts": {
-    "build": "ns clean && npm i && npm run ts.patch && npm run tsc",
-    "demo.ios": "npm run build && cd ../demo && ns run ios",
-    "demo.android": "npm run preparedemo && cd ../demo && ns run android",
-    "test": "npm run tslint && npm run tslint.demo && cd ../demo && ns build ios && ns build android",
-    "test.ios": "cd ../demo && ns platform remove ios && ns test ios --emulator",
-    "test.ios.device": "cd ../demo && ns platform remove ios && ns test ios",
-    "test.android": "cd ../demo && ns platform remove android && ns test android",
-    "preparedemo": "npm run build && cd ../demo && ns clean && ns install",
-    "setup": "npm run build && cd ../demo && npm i",
-    "setupandinstall": "npm i && cd ../demo && npm i && cd ../src && npm run build && cd ../demo && ns plugin add ../src && cd ../src",
-    "tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude '**/node_modules/**' --exclude '**/tns_modules/**' --exclude '**/typings/**' --exclude '**/platforms/**'",
-    "tslint.demo": "tslint --config '../tslint.json' '../demo/app/*.ts' --exclude '**/node_modules/**'",
-    "ci.tslint": "npm i && tslint '**/*.ts' --config '../tslint.json' --exclude '**/node_modules/**' --exclude '**/typings/**'",
-    "prepublishOnly": "npm run build",
-    "development.setup": "npm run setup && npm link && cd ../demo && npm link nativescript-app-shortcuts && cd ../src"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/hsz1273327/nativescript-app-shortcuts.git"
