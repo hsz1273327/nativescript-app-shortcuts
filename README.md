@@ -16,190 +16,19 @@
 <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-app-shortcuts/master/media/iOS.png" width="360px" />  <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-app-shortcuts/master/media/Android.png" width="360px" />
 
 ### Supported platforms
+
 * iPhone 6s / 6s Plus or newer, running iOS 9 or newer.
 * Android 7.1 (API level 25) or newer.
 
 ## Installation
 From the command prompt go to your app's root folder and execute:
 
-NativesScript 7.x
 ```
-tns plugin add nativescript-app-shortcuts
-```
-
-NativesScript 6.x
-```
-tns plugin add nativescript-app-shortcuts@2.2.0
+ns plugin add ns-shortcuts
 ```
 
-## Demo app (XML & TypeScript)
-Want to dive in quickly? Check out [the demo app](demo)! Otherwise, continue reading.
-
-## Demo app (Angular)
-This plugin is part of the [plugin showcase app](https://github.com/EddyVerbruggen/nativescript-pluginshowcase/tree/master/app/appicon) I built using Angular.
 
 ## API
-
-### `available`
-Check whether or not the device is capable.
-Android devices will also report `false`, so you can use this cross platform.
-
-##### JavaScript
-```js
-// require the plugin
-var AppShortcuts = require("nativescript-app-shortcuts").AppShortcuts;
-
-// instantiate the plugin
-var appShortcuts = new AppShortcuts();
-
-appShortcuts.available().then(
-  function(available) {
-    if (available) {
-      console.log("This device supports app shortcuts");
-    } else {
-      console.log("No app shortcuts capability, ask the user to upgrade :)");
-    }
-  }
-);
-```
-
-##### TypeScript
-```typescript
-// require the plugin
-import { AppShortcuts } from "nativescript-app-shortcuts";
-
-// instantiate the plugin
-let appShortcuts = new AppShortcuts();
-
-appShortcuts.available().then(available => {
-  if (available) {
-    console.log("This device supports app shortcuts");
-  } else {
-    console.log("No app shortcuts capability, ask the user to upgrade :)");
-  }
-});
-```
-
-### `configureQuickActions`
-When your app is running you can add those fancy Quick Actions to the Home Screen icon. You can configure up to four icons and they are 'cached' by iOS until you pass in a new set of icons. So you don't need to do this every time your app loads, but it can't really hurt of course.
-
-The `type` param (see the code sample below) is the most convenient way to relate the icon to the event you'll receive when the action was used to launch your app. So make sure it's unique amongst your icons.
-
-There are two types of icons currently supported: `iconType` and `iconTemplate`.
-
-#### iconType (iOS)
-A value from a [fixed list of icons which have been provided by Apple](https://developer.apple.com/ios/human-interface-guidelines/icons-and-images/system-icons/#home-screen-quick-action-icons) and look great (click the value in the 'API' column to look up the Objective-C name, and look at the sample below how to use them).
-
-#### iconTemplate
-Can be used to provide your own icon. It must be a valid name of an icon template in your Assets catalog. NativeScript allows you to add the icon to the `app/App_Resources/<platform>` folder. If you add a file called `beer.png` then reference it as `beer`. More on these images below when we discuss static actions.
-
-Ignored on iOS, if `iconType` is set as well.
-
-##### TypeScript
-```typescript
-import { AppShortcuts } from "nativescript-app-shortcuts";
-import { isIOS } from "tns-core-modules/platform";
-
-let appShortcuts = new AppShortcuts();
-
-appShortcuts.configureQuickActions([
-  {
-    type: "capturePhoto",
-    title: "Snag a pic",
-    subtitle: "You have 23 snags left", // iOS only
-    iconType: isIOS ? UIApplicationShortcutIconType.CapturePhoto : null,
-    iconTemplate: "eye" // ignored by iOS, if iconType is set as well
-  },
-  {
-    type: "beer",
-    title: "Beer-tastic!",
-    subtitle: "Check in & share", // iOS only
-    iconTemplate: "beer"
-  }
-]).then(() => {
-  alert("Added 2 actions, close the app and apply pressure to the app icon to check it out!");
-}, (errorMessage) => {
-  alert(errorMessage);
-});
-```
-
-## Capturing the Action
-When a home icon is pressed, your app launches. You probably want to perform different actions based on the home icon action
-that was picked (like routing to a different page), so you need a way to capture the event.
-
-### NativeScript with XML
-In a non-Angular NativeScript app we need to extend `app.js` or `app.ts` and import the plugin,
-then call the `setQuickActionCallback` function. So in case of `app.ts` change it from something like this:
-
-```typescript
-import * as application from "tns-core-modules/application";
-application.start({ moduleName: "main-page" });
-```
-
-To this:
-
-```typescript
-import * as application from "tns-core-modules/application";
-
-// import the plugin
-import { AppShortcuts } from "nativescript-app-shortcuts";
-
-// instantiate it and call setQuickActionCallback
-new AppShortcuts().setQuickActionCallback(shortcutItem => {
-  console.log(`The app was launched by shortcut type '${shortcutItem.type}'`);
-
-  // this is where you handle any specific case for the shortcut
-  if (shortcutItem.type === "beer") {
-    // this is an example of 'deeplinking' through a shortcut
-    let frames = require("ui/frame");
-    // on Android we need a little delay
-    setTimeout(() => {
-      frames.topmost().navigate("beer-page");
-    });
-  } else {
-    // .. any other shortcut handling
-  }
-});
-
-application.start({ moduleName: "main-page" });
-```
-
-### NativeScript with Angular
-If you're using Angular, the best place to add the handler is in `app.module.ts`,
-and use `NgZone` to help Angular knowing about the route change you're performing:
-
-```typescript
-import { NgZone } from "@angular/core";
-import { isIOS } from "tns-core-modules/platform";
-import { RouterExtensions } from "nativescript-angular";
-import { AppShortcuts } from "nativescript-app-shortcuts";
-
-export class AppModule {
-  constructor(private routerExtensions: RouterExtensions,
-              private zone: NgZone) {
-
-    new AppShortcuts().setQuickActionCallback(shortcutItem => {
-  console.log(`The app was launched by shortcut type '${shortcutItem.type}'`);
-
-      // this is where you handle any specific case for the shortcut, based on its type
-      if (shortcutItem.type === "page1") {
-        this.deeplink("/page1");
-      } else if (shortcutItem.type === "page2") {
-        this.deeplink("/page2");
-      }
-    });
-  }
-
-  private deeplink(to: string): void {
-    this.zone.run(() => {
-      this.routerExtensions.navigate([to], {
-        animated: false
-      });
-    });
-  }
-}
-```
-
 ## Configuring Static Actions
 With `configureQuickActions` you can configure dynamic actions,
 but what if you want actions to be available immediately after the app as installed from the store?
