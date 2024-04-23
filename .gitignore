@@ -1,9 +1,7 @@
 .idea
 .vscode
 .DS_Store
-*.js
 *.log
-*.map
 *.tgz
 !src/angular/*.js
 !demo/karma.conf.js

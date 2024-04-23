@@ -2,7 +2,7 @@
   "name": "ns-shortcuts",
   "version": "1.0.0",
   "description": "Add static shortcut actions to your app icon.",
-  "main": "./index",
+  "main": "./ns-shortcuts",
   "sideEffects": false,
   "typings": "./index.d.ts",
   "nativescript": {
@@ -26,6 +26,9 @@
     "Shortcut",
     "Force Touch"
   ],
+  "scripts": {
+  "build": "ns clean && npm i && ./node_modules/.bin/tsc"
+  },
   "author": {
     "name": "Eddy Verbruggen",
     "email": "eddyverbruggen@gmail.com"
