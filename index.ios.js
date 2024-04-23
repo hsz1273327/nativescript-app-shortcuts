@@ -1,5 +1,6 @@
-import { Application } from "@nativescript/core";
+import { Application, Utils } from "@nativescript/core";
 const iOSApplication = Application.ios;
+const iOSUtils = Utils.ios;
 let quickActionCallback = null;
 let lastQuickAction = null;
 const callback = (application, shortcutItem, completionHandler) => {
@@ -30,6 +31,37 @@ var AppShortcutsUIApplicationDelegate = /** @class */ (function (_super) {
     }
 })();
 export class AppShortcuts {
+    constructor() {
+        this.availability = null;
+    }
+    available() {
+        return new Promise((resolve, reject) => {
+            if (this.availability !== null) {
+                resolve(this.availability);
+                return;
+            }
+            if (iOSUtils.MajorVersion >= 13) {
+                resolve(true);
+                return;
+            }
+            if (iOSUtils.MajorVersion >= 9) {
+                if (iOSApplication.nativeApp.keyWindow === null) {
+                    setTimeout(() => {
+                        this.availability = 2 === iOSApplication.nativeApp.keyWindow.rootViewController.traitCollection.forceTouchCapability;
+                        resolve(this.availability);
+                    });
+                }
+                else {
+                    this.availability = 2 === iOSApplication.nativeApp.keyWindow.rootViewController.traitCollection.forceTouchCapability;
+                    resolve(this.availability);
+                }
+            }
+            else {
+                this.availability = false;
+                resolve(this.availability);
+            }
+        });
+    }
     setQuickActionCallback(callback) {
         quickActionCallback = callback;
         if (lastQuickAction !== null) {

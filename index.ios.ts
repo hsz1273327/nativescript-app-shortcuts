@@ -1,8 +1,8 @@
-import { Application } from "@nativescript/core";
+import { Application, Utils } from "@nativescript/core";
 import { AppShortcutsAPI, LaunchQuickAction } from "./index.common";
 
 const iOSApplication = Application.ios;
-
+const iOSUtils = Utils.ios;
 let quickActionCallback: (data: LaunchQuickAction) => void = null;
 let lastQuickAction: any = null;
 
@@ -34,7 +34,41 @@ class AppShortcutsUIApplicationDelegate extends UIResponder implements UIApplica
 
 export class AppShortcuts implements AppShortcutsAPI {
   // caching for efficiency
+  private availability = null;
 
+  public available(): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+
+      if (this.availability !== null) {
+        resolve(this.availability);
+        return;
+      }
+
+      // With iOS 13 probably any iOS device supports this feature, because 3D Touch is no longer required
+      if (iOSUtils.MajorVersion >= 13) {
+        resolve(true);
+        return;
+      }
+
+      // iOS 9 added 3D Touch capability
+      if (iOSUtils.MajorVersion >= 9) {
+        // .. but not all devices running iOS 9 support it
+        if (iOSApplication.nativeApp.keyWindow === null) {
+          // (especially) in Angular apps, this might run too soon. Wrapping it in a timeout solves that issue.
+          setTimeout(() => {
+            this.availability = UIForceTouchCapability.Available === iOSApplication.nativeApp.keyWindow.rootViewController.traitCollection.forceTouchCapability;
+            resolve(this.availability);
+          });
+        } else {
+          this.availability = UIForceTouchCapability.Available === iOSApplication.nativeApp.keyWindow.rootViewController.traitCollection.forceTouchCapability;
+          resolve(this.availability);
+        }
+      } else {
+        this.availability = false;
+        resolve(this.availability);
+      }
+    });
+  }
   public setQuickActionCallback(callback: (data: LaunchQuickAction) => void) {
     quickActionCallback = callback;
     if (lastQuickAction !== null) {

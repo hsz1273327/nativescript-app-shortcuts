@@ -36,7 +36,15 @@ const SHORTCUT_PREFIX = "shortcut.type.";
 })();
 
 export class AppShortcuts implements AppShortcutsAPI {
+  private supported(): boolean {
+    return android.os.Build.VERSION.SDK_INT >= 25; // Android 7.1+
+  }
 
+  available(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      resolve(this.supported());
+    });
+  }
 
   setQuickActionCallback(callback: (data: LaunchQuickAction) => void): void {
     quickActionCallback = callback;

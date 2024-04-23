@@ -14,5 +14,6 @@ export interface LaunchQuickAction {
 }
 
 export interface AppShortcutsAPI {
+  available(): Promise<boolean>;
   setQuickActionCallback(callback: (data: LaunchQuickAction) => void): void;
 }

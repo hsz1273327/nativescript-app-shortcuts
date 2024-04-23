@@ -28,6 +28,14 @@ const SHORTCUT_PREFIX = "shortcut.type.";
     Application.on("launch", (args) => iconHandler(args));
 })();
 export class AppShortcuts {
+    supported() {
+        return android.os.Build.VERSION.SDK_INT >= 25;
+    }
+    available() {
+        return new Promise((resolve, reject) => {
+            resolve(this.supported());
+        });
+    }
     setQuickActionCallback(callback) {
         quickActionCallback = callback;
         if (lastQuickAction !== null) {
