@@ -1,39 +1,33 @@
 # NativeScript Icon Shortcuts plugin
 
-[![Build Status][build-status]][build-url]
-[![NPM version][npm-image]][npm-url]
-[![Downloads][downloads-image]][npm-url]
-[![Twitter Follow][twitter-image]][twitter-url]
-
-[build-status]:https://travis-ci.org/EddyVerbruggen/nativescript-app-shortcuts.svg?branch=master
-[build-url]:https://travis-ci.org/EddyVerbruggen/nativescript-app-shortcuts
-[npm-image]:http://img.shields.io/npm/v/nativescript-app-shortcuts.svg
-[npm-url]:https://npmjs.org/package/nativescript-app-shortcuts
-[downloads-image]:http://img.shields.io/npm/dm/nativescript-app-shortcuts.svg
-[twitter-image]:https://img.shields.io/twitter/follow/eddyverbruggen.svg?style=social&label=Follow%20me
-[twitter-url]:https://twitter.com/eddyverbruggen
+a fork for [EddyVerbruggen/nativescript-app-shortcuts](https://github.com/EddyVerbruggen/nativescript-app-shortcuts)
 
 <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-app-shortcuts/master/media/iOS.png" width="360px" />  <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-app-shortcuts/master/media/Android.png" width="360px" />
 
-### Supported platforms
+## Supported platforms
 
 * iPhone 6s / 6s Plus or newer, running iOS 9 or newer.
 * Android 7.1 (API level 25) or newer.
 
+## Features
+
+* remove`available(): Promise<boolean>`and`configureQuickActions(actions: Array<QuickAction>): Promise<void>`,force on static shortcuts
+* use deeplink in `android:data` in android instead of `android:targetClass`, use `android:targetClass` now in nativescript will throw system error
+
 ## Installation
+
 From the command prompt go to your app's root folder and execute:
 
-```
+```bash
 ns plugin add ns-shortcuts
 ```
 
-
 ## API
-## Configuring Static Actions
-With `configureQuickActions` you can configure dynamic actions,
-but what if you want actions to be available immediately after the app as installed from the store?
 
-### iOS
+you should declear the shortcuts in `app/App_Resources/<platform>`first then regist the callback
+
+### iOS config
+
 You need to manually edit the `.plist`.
 Fortunately NativeScript allows you to change this file through `app/App_Resources/iOS/Info.plist`. Anything added there is added to the final `.plist` during a build.
 
@@ -54,14 +48,6 @@ Here's an example which you can paste anywhere in the `.plist` file:
     <key>UIApplicationShortcutItemType</key>
     <string>eyefromplist</string>
   </dict>
-  <dict>
-    <key>UIApplicationShortcutItemIconType</key>
-    <string>UIApplicationShortcutIconTypeCompose</string>
-    <key>UIApplicationShortcutItemTitle</key>
-    <string>Compose</string>
-    <key>UIApplicationShortcutItemType</key>
-    <string>compose</string>
-  </dict>
 </array>
 ```
 
@@ -77,7 +63,10 @@ You can guess what those do, right? Only the title is mandatory.
 
 This is the same as the `type` param of `configureQuickActions`, so it's what you'll receive in the callback you may have configured in `app.js` / `app.ts`  as `payload.type`. Just do something cool with that info (like routing to a specific page and loading some content).
 
-### Android
+### Android config
+
+By using this plugin, you must set message contains `shortcut.type.`
+
 Open `app/App_Resources/Android/AndroidManifest.xml` and add:
 
 ```xml

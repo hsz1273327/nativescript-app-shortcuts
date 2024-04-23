@@ -2,7 +2,7 @@
   "name": "ns-shortcuts",
   "version": "1.0.0",
   "description": "Add static shortcut actions to your app icon.",
-  "main": "./ns-shortcuts",
+  "main": "./index",
   "sideEffects": false,
   "typings": "./index.d.ts",
   "nativescript": {
@@ -27,11 +27,13 @@
     "Force Touch"
   ],
   "scripts": {
-  "build": "ns clean && npm i && ./node_modules/.bin/tsc"
+    "ts-patch": "node_modules/.bin/ts-patch",
+    "build": "npm i && node_modules/.bin/tsc -skipLibCheck",
+    "publish": "npm login && npm publish"
   },
   "author": {
-    "name": "Eddy Verbruggen",
-    "email": "eddyverbruggen@gmail.com"
+    "name": "hsz1273327",
+    "email": "hsz1273327@gmail.com"
   },
   "license": "MIT",
   "bugs": {
@@ -40,17 +42,18 @@
   "homepage": "https://github.com/hsz1273327/nativescript-app-shortcuts",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "@nativescript/core": "~8.7.1",
     "@nativescript/android": "~8.7.0",
+    "@nativescript/core": "~8.7.1",
     "@nativescript/ios": "~8.7.0",
+    "@nativescript/tailwind": "~2.0.1",
     "@nativescript/types": "~8.7.0",
     "@nativescript/webpack": "~5.0.0",
     "@types/node": "~17.0.21",
     "tailwindcss": "^3.1.8",
-    "typescript": "^5.2.2",
-    "@nativescript/tailwind": "~2.0.1"
+    "typescript": "^5.2.2"
   },
   "dependencies": {
+    "ts-patch": "^3.1.2",
     "url-parse": "^1.5.10"
   }
 }

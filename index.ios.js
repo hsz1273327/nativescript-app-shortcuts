@@ -10,15 +10,17 @@ const callback = (application, shortcutItem, completionHandler) => {
         lastQuickAction = shortcutItem;
     }
 };
-let AppShortcutsUIApplicationDelegate = class AppShortcutsUIApplicationDelegate extends UIResponder {
-    applicationPerformActionForShortcutItemCompletionHandler(application, shortcutItem, completionHandler) {
-        callback(application, shortcutItem, completionHandler);
+var AppShortcutsUIApplicationDelegate = /** @class */ (function (_super) {
+    __extends(AppShortcutsUIApplicationDelegate, _super);
+    function AppShortcutsUIApplicationDelegate() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-};
-AppShortcutsUIApplicationDelegate.ObjCProtocols = [UIApplicationDelegate];
-AppShortcutsUIApplicationDelegate = __decorate([
-    NativeClass()
-], AppShortcutsUIApplicationDelegate);
+    AppShortcutsUIApplicationDelegate.prototype.applicationPerformActionForShortcutItemCompletionHandler = function (application, shortcutItem, completionHandler) {
+        callback(application, shortcutItem, completionHandler);
+    };
+    AppShortcutsUIApplicationDelegate.ObjCProtocols = [UIApplicationDelegate];
+    return AppShortcutsUIApplicationDelegate;
+}(UIResponder));
 (() => {
     if (iOSApplication.delegate !== undefined) {
         iOSApplication.delegate.prototype.applicationPerformActionForShortcutItemCompletionHandler = callback;
