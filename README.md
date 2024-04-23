@@ -40,34 +40,31 @@ Here's an example which you can paste anywhere in the `.plist` file:
 <array>
   <dict>
     <key>UIApplicationShortcutItemIconFile</key>
-    <string>Eye</string>
+    <string>eye</string>
     <key>UIApplicationShortcutItemTitle</key>
-    <string>Eye from plist</string>
+    <string>Eye</string>
     <key>UIApplicationShortcutItemSubtitle</key>
     <string>Awesome subtitle</string>
     <key>UIApplicationShortcutItemType</key>
-    <string>eyefromplist</string>
+    <string>eye</string>
   </dict>
 </array>
 ```
 
-#### UIApplicationShortcutItemIconFile
+A few notes:
 
-The second action above uses the built-in `UIApplicationShortcutIconTypeCompose` icon, but the first one uses a custom icon: `Eye`. This expects the file `app/App_Resources/iOS/Eye.png`. According to Apple's docs this needs to be a single color, transparent, square, `35x35` icon - but that size will look pixelated on retina devices so go ahead and use a `70x70` or `105x105` icon if you please.
+* set shortcuts as dict item in the array.(you can add more if you like)
+* `UIApplicationShortcutItemIconFile`.The second action above uses the built-in `UIApplicationShortcutIconTypeCompose` icon, but the first one uses a custom icon: `eye`. This expects the file `app/App_Resources/iOS/eye.png`. According to Apple's docs this needs to be a single color, transparent, square, `35x35` icon - but that size will look pixelated on retina devices so go ahead and use a `70x70` or `105x105` icon if you please.
 
-#### UIApplicationShortcutItemTitle / UIApplicationShortcutItemSubtitle
+* `UIApplicationShortcutItemTitle`.The title of the shortcut.
 
-You can guess what those do, right? Only the title is mandatory.
+* `UIApplicationShortcutItemSubtitle`.The subtitle of the shortcut.
 
-#### UIApplicationShortcutItemType
-
-This is the same as the `type` param of `configureQuickActions`, so it's what you'll receive in the callback you may have configured in `app.js` / `app.ts`  as `payload.type`. Just do something cool with that info (like routing to a specific page and loading some content).
+* `UIApplicationShortcutItemType`.The payload message which will send to the application when clicked the shortcut. It will set as the `type` param of `configureQuickActions` of the callback.
 
 ### Android config
 
-By using this plugin, you must set message contains `shortcut.type.`
-
-Open `app/App_Resources/Android/AndroidManifest.xml` and add:
+1. Open `app/App_Resources/Android/AndroidManifest.xml` and add:
 
 ```xml
 <activity ..> <!-- your existing NativeScript activity -->
@@ -76,28 +73,50 @@ Open `app/App_Resources/Android/AndroidManifest.xml` and add:
 </activity>
 ```
 
-Add the file you referenced in `AndroidManifest.xml`: `/app/App_Resources/Android/xml/shortcuts.xml` and add:
+2. Open `app/App_Resources/Android/AndroidManifest.xml`, set `deeplinking`
+
+```xml
+<activity ..><!-- your existing NativeScript activity -->
+...
+  <intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <!-- url started with `myapp://` will work -->
+    <data android:scheme="myapp" />
+  </intent-filter>
+</activity>
+```
+
+3. Add the file you referenced in `AndroidManifest.xml`: `/app/App_Resources/Android/xml/shortcuts.xml` and add:
 
 ```xml
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
   <shortcut
-      android:shortcutId="compose"
+      android:shortcutId="eye"
       android:enabled="true"
-      android:icon="@drawable/add"
-      android:shortcutShortLabel="@string/shortcut_short_label1"
-      android:shortcutLongLabel="@string/shortcut_long_label1"
-      android:shortcutDisabledMessage="@string/shortcut_disabled_message1">
-    <intent
-        android:action="shortcut.type.compose"
-        android:targetPackage="org.nativescript.plugindemo.appshortcuts"
-        android:targetClass="com.tns.NativeScriptActivity"/>
+      android:icon="@drawable/eye"
+      android:shortcutShortLabel="@string/shortcut_short_label_eye"
+      android:shortcutLongLabel="@string/shortcut_long_label_eye"
+      android:shortcutDisabledMessage="@string/shortcut_disabled_message_eye">
+    <intent android:action="android.intent.action.VIEW"
+      android:targetPackage="org.nativescript.myAwesomeApp"
+      android:data="myapp://shortcut.type.eye" />
     <categories android:name="android.shortcut.conversation"/>
   </shortcut>
 </shortcuts>
 ```
 
 A few notes:
-- This adds 1 static `shortcut` to your app (you can add more if you like).
-- Make sure the `action` has the `shortcut.type.` prefix. The value behind the prefix is the equivalent of the iOS `UIApplicationShortcutItemType`.
-- The `targetPackage` needs to be your app id.
-- The `targetClass` needs to be the `activity` class as mentioned in `AndroidManifest.xml`, which is `com.tns.NativeScriptApplication` by default. 
+
+* This adds 1 static `shortcut` to your app (you can add more if you like).
+
+* `android:shortcutId` is the id of certain shortcut.
+
+* `android:icon`set the icon, in this example, you can drop `eye.png` into `/app/App_Resources/Android/src/main/res/drawable-nodpi/`.
+
+* `android:shortcutShortLabel`,`android:shortcutLongLabel`,`android:shortcutDisabledMessage` is the shortcut's copywriting,you can set them in `app/App_Resources/Android/src/main/res/values/string.xml`
+
+* `intent` declear the action when click the shortcut.`android:action` must be `android.intent.action.VIEW`,`android:targetPackage` must be the application's ID. `android:data` must use the scheme you defined in step 2,and the hostname must started with `shortcut.type.` as prefix.The value behind the prefix is the equivalent of the iOS `UIApplicationShortcutItemType`
+
+* `categories android:name` must be `android.shortcut.conversation`
