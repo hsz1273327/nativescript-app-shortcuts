@@ -11,7 +11,7 @@ a fork for [EddyVerbruggen/nativescript-app-shortcuts](https://github.com/EddyVe
 
 ## Features
 
-* remove`available(): Promise<boolean>`and`configureQuickActions(actions: Array<QuickAction>): Promise<void>`,force on static shortcuts
+* remove`configureQuickActions(actions: Array<QuickAction>): Promise<void>`,force on static shortcuts
 * use deeplink in `android:data` in android instead of `android:targetClass`, use `android:targetClass` now in nativescript will throw system error
 
 ## Installation
@@ -24,7 +24,7 @@ ns plugin add ns-shortcuts
 
 ## API
 
-you should declear the shortcuts in `app/App_Resources/<platform>`first then regist the callback
+If you want to set static shortcut, you should first check if the device can support shortcut by api `available(): Promise<boolean>`.then you can declear the shortcuts in `app/App_Resources/<platform>`first then regist the callback.
 
 ### iOS config
 
