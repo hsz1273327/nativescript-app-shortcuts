@@ -2,7 +2,9 @@
   "name": "ns-shortcuts",
   "version": "1.0.0",
   "description": "Add static shortcut actions to your app icon.",
-  "main": "ns-shortcuts",
+  "main": "./index",
+  "sideEffects": false,
+  "typings": "./index.d.ts",
   "nativescript": {
     "platforms": {
       "android": "~8.7.0",

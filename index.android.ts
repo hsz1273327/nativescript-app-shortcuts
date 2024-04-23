@@ -1,4 +1,4 @@
-import { AppShortcutsAPI, LaunchQuickAction } from "./ns-shortcuts.common";
+import { AppShortcutsAPI, LaunchQuickAction } from "./index.common";
 import { Application } from "@nativescript/core";
 import * as urlparse from 'url-parse';
 

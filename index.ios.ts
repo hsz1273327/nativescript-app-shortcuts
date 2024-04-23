@@ -1,5 +1,5 @@
 import { Application } from "@nativescript/core";
-import { AppShortcutsAPI, LaunchQuickAction } from "./ns-shortcuts.common";
+import { AppShortcutsAPI, LaunchQuickAction } from "./index.common";
 
 const iOSApplication = Application.ios;
 
