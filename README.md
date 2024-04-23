@@ -100,7 +100,6 @@ A few notes:
           android:shortcutLongLabel="@string/shortcut_long_label_eye"
           android:shortcutDisabledMessage="@string/shortcut_disabled_message_eye">
         <intent android:action="android.intent.action.VIEW"
-          android:targetPackage="org.nativescript.myAwesomeApp"
           android:data="myapp://shortcut.type.eye" />
         <categories android:name="android.shortcut.conversation"/>
       </shortcut>
@@ -117,7 +116,7 @@ A few notes:
 
 * `android:shortcutShortLabel`,`android:shortcutLongLabel`,`android:shortcutDisabledMessage` is the shortcut's copywriting,you can set them in `app/App_Resources/Android/src/main/res/values/string.xml`
 
-* `intent` declear the action when click the shortcut.`android:action` must be `android.intent.action.VIEW`,`android:targetPackage` must be the application's ID. `android:data` must use the scheme you defined in step 2,and the hostname must started with `shortcut.type.` as prefix.The value behind the prefix is the equivalent of the iOS `UIApplicationShortcutItemType`
+* `intent` declear the action when click the shortcut.`android:action` must be `android.intent.action.VIEW`,`android:data` must use the scheme you defined in step 2,and the hostname must started with `shortcut.type.` as prefix.The value behind the prefix is the equivalent of the iOS `UIApplicationShortcutItemType`
 
 * `categories android:name` must be `android.shortcut.conversation`
 
