@@ -1,6 +1,6 @@
 # NativeScript Icon Shortcuts plugin
 
-a fork for [EddyVerbruggen/nativescript-app-shortcuts](https://github.com/EddyVerbruggen/nativescript-app-shortcuts)
+A fork for [EddyVerbruggen/nativescript-app-shortcuts](https://github.com/EddyVerbruggen/nativescript-app-shortcuts)
 
 <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-app-shortcuts/master/media/iOS.png" width="360px" />  <img src="https://raw.githubusercontent.com/EddyVerbruggen/nativescript-app-shortcuts/master/media/Android.png" width="360px" />
 
@@ -66,46 +66,46 @@ A few notes:
 
 1. Open `app/App_Resources/Android/AndroidManifest.xml` and add:
 
-```xml
-<activity ..> <!-- your existing NativeScript activity -->
-  <meta-data android:name="android.app.shortcuts"
-             android:resource="@xml/shortcuts" />
-</activity>
-```
+    ```xml
+    <activity ..> <!-- your existing NativeScript activity -->
+      <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+    </activity>
+    ```
 
-2. Open `app/App_Resources/Android/AndroidManifest.xml`, set `deeplinking`
+2. Open `app/App_Resources/Android/src/main/AndroidManifest.xml`, set `deeplinking`
 
-```xml
-<activity ..><!-- your existing NativeScript activity -->
-...
-  <intent-filter>
-    <action android:name="android.intent.action.VIEW" />
-    <category android:name="android.intent.category.DEFAULT" />
-    <category android:name="android.intent.category.BROWSABLE" />
-    <!-- url started with `myapp://` will work -->
-    <data android:scheme="myapp" />
-  </intent-filter>
-</activity>
-```
+    ```xml
+    <activity ..><!-- your existing NativeScript activity -->
+    ...
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <!-- url started with `myapp://` will work -->
+        <data android:scheme="myapp" />
+      </intent-filter>
+    </activity>
+    ```
 
-3. Add the file you referenced in `AndroidManifest.xml`: `/app/App_Resources/Android/xml/shortcuts.xml` and add:
+3. Add the file you referenced in `AndroidManifest.xml`: `/app/App_Resources/Android/src/main/res/xml/shortcuts.xml` and add:
 
-```xml
-<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
-  <shortcut
-      android:shortcutId="eye"
-      android:enabled="true"
-      android:icon="@drawable/eye"
-      android:shortcutShortLabel="@string/shortcut_short_label_eye"
-      android:shortcutLongLabel="@string/shortcut_long_label_eye"
-      android:shortcutDisabledMessage="@string/shortcut_disabled_message_eye">
-    <intent android:action="android.intent.action.VIEW"
-      android:targetPackage="org.nativescript.myAwesomeApp"
-      android:data="myapp://shortcut.type.eye" />
-    <categories android:name="android.shortcut.conversation"/>
-  </shortcut>
-</shortcuts>
-```
+    ```xml
+    <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+      <shortcut
+          android:shortcutId="eye"
+          android:enabled="true"
+          android:icon="@drawable/eye"
+          android:shortcutShortLabel="@string/shortcut_short_label_eye"
+          android:shortcutLongLabel="@string/shortcut_long_label_eye"
+          android:shortcutDisabledMessage="@string/shortcut_disabled_message_eye">
+        <intent android:action="android.intent.action.VIEW"
+          android:targetPackage="org.nativescript.myAwesomeApp"
+          android:data="myapp://shortcut.type.eye" />
+        <categories android:name="android.shortcut.conversation"/>
+      </shortcut>
+    </shortcuts>
+    ```
 
 A few notes:
 
@@ -120,3 +120,56 @@ A few notes:
 * `intent` declear the action when click the shortcut.`android:action` must be `android.intent.action.VIEW`,`android:targetPackage` must be the application's ID. `android:data` must use the scheme you defined in step 2,and the hostname must started with `shortcut.type.` as prefix.The value behind the prefix is the equivalent of the iOS `UIApplicationShortcutItemType`
 
 * `categories android:name` must be `android.shortcut.conversation`
+
+### regist callback
+
+use API `setQuickActionCallback(callback: (data: LaunchQuickAction) => void): void` to regist callback for shortcuts.
+
+The `ShortcutItemType` will in `LaunchQuickAction.type`. You can use it to route to the certain page.
+
+```ts
+import { AppShortcuts } from "ns-shortcuts"
+import { router } from "~/router/router"
+...
+let appShortcuts = new AppShortcuts()
+...
+appShortcuts.setQuickActionCallback(shortcutItem => {
+    console.log(`get QuickActionCallback`)
+    switch (shortcutItem.type) {
+        case "eye":
+            {
+                setTimeout(() => {
+                    router.push("/page1", {
+                        frame: "main-frame"
+                    })
+                    console.log(`get shortcutItem.type eye`)
+                })
+            }
+            break;
+        case "beer":
+            {
+                setTimeout(() => {
+                    router.push("/page2", {
+                        frame: "main-frame"
+                    })
+                    console.log(`get shortcutItem.type eye`)
+                })
+            }
+            break;
+        default:
+            {
+                setTimeout(() => {
+                    router.push("/", { frame: "main-frame" }),
+                    console.log(`get unknown shortcutItem.type ${shortcutItem.type}`)
+                })
+            }
+            break;
+    }
+})
+```
+
+A few notes:
+
+* if you want to use this plugin with [router-vue-native](https://www.npmjs.com/package/router-vue-native) or other router programme based on [manual-routing](https://docs.nativescript.org/guide/navigation/frames-and-pages), you'd better use only one Frame Only on the root node. Otherwise there will get `java.lang.RuntimeException: Unable to resume activity` error on android.
+
+* route to a page need to set in `setTimeout(() => {route code})`. Otherwise there will get error.
