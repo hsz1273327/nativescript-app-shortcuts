@@ -126,46 +126,48 @@ use API `setQuickActionCallback(callback: (data: LaunchQuickAction) => void): vo
 
 The `ShortcutItemType` will in `LaunchQuickAction.type`. You can use it to route to the certain page.
 
-```ts
-import { AppShortcuts } from "ns-shortcuts"
-import { router } from "~/router/router"
-...
-let appShortcuts = new AppShortcuts()
-...
-appShortcuts.setQuickActionCallback(shortcutItem => {
-    console.log(`get QuickActionCallback`)
-    switch (shortcutItem.type) {
-        case "eye":
-            {
-                setTimeout(() => {
-                    router.push("/page1", {
-                        frame: "main-frame"
++ `app.ts`
+
+    ```ts
+    import { AppShortcuts } from "ns-shortcuts"
+    import { router } from "~/router/router"
+    ...
+    let appShortcuts = new AppShortcuts()
+    ...
+    appShortcuts.setQuickActionCallback(shortcutItem => {
+        console.log(`get QuickActionCallback`)
+        switch (shortcutItem.type) {
+            case "eye":
+                {
+                    setTimeout(() => {
+                        router.push("/page1", {
+                            frame: "main-frame"
+                        })
+                        console.log(`get shortcutItem.type eye`)
                     })
-                    console.log(`get shortcutItem.type eye`)
-                })
-            }
-            break;
-        case "beer":
-            {
-                setTimeout(() => {
-                    router.push("/page2", {
-                        frame: "main-frame"
+                }
+                break;
+            case "beer":
+                {
+                    setTimeout(() => {
+                        router.push("/page2", {
+                            frame: "main-frame"
+                        })
+                        console.log(`get shortcutItem.type eye`)
                     })
-                    console.log(`get shortcutItem.type eye`)
-                })
-            }
-            break;
-        default:
-            {
-                setTimeout(() => {
-                    router.push("/", { frame: "main-frame" }),
-                    console.log(`get unknown shortcutItem.type ${shortcutItem.type}`)
-                })
-            }
-            break;
-    }
-})
-```
+                }
+                break;
+            default:
+                {
+                    setTimeout(() => {
+                        router.push("/", { frame: "main-frame" }),
+                        console.log(`get unknown shortcutItem.type ${shortcutItem.type}`)
+                    })
+                }
+                break;
+        }
+    })
+    ```
 
 A few notes:
 
