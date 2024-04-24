@@ -1,6 +1,6 @@
 {
   "name": "ns-shortcuts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Add static shortcut actions to your app icon.",
   "main": "./index",
   "sideEffects": false,
